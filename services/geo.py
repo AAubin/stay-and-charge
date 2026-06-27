@@ -45,4 +45,4 @@ def zoom_to_radius(zoom: int, lat: float) -> float:
     pass
 
 def calculate_distance (coord_1: tuple[float, float], coord_2: tuple[float, float]) -> float:
-    return geodesic(coord_1, coord_2).km
+    return geodesic(coord_1, coord_2).m

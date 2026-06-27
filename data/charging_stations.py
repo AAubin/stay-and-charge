@@ -26,14 +26,14 @@ def search_charging_stations(search_coord: tuple[float, float], radius: int) -> 
             f"consolidated_latitude > {lat - lat_delta} AND "
             f"consolidated_latitude < {lat + lat_delta} AND "
             f"consolidated_longitude > {lng - lng_delta} AND "
-            f"consolidated_longitude < {lng + lng_delta}"
+            f"consolidated_longitude < {lng + lng_delta} AND "
+            f"condition_acces != 'Accès réservé'"
         )
 
         payload = {
             'where': where,
             'select': FIELDS_SELECT,
             'limit': 100,
-            'order_by': f"distance(coordonneesxy, GEOM'POINT({lng} {lat})') ASC, puissance_nominale DESC"
         }
 
         logger.debug(f'Opendatasoft requests with location {search_coord} with {radius} meters radius.')

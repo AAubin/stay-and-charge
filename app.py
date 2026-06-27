@@ -4,8 +4,8 @@ setup_logging()
 logger = logging.getLogger(__name__)
 
 from data.cache import geocode_city, search_lodgings, search_charging_stations
-from services.geo import distance_lodging_station
-
+from services.geo import calculate_distance
+from services.station_finder import find_all_nearby_stations
 
 test_city = 'Bordeaux'
 test_coord = geocode_city(test_city)
@@ -30,5 +30,13 @@ if nb_stations > 0:
 if lodging and station:
     coord_lodg = (lodging.lat, lodging.lng)
     coord_stat = (station.lat, station.lng)
-    test_dist = distance_lodging_station(coord_lodg, coord_stat)
+    test_dist = calculate_distance(coord_lodg, coord_stat)
     logger.info(f"Exemple de cacul de distance {test_dist}")
+
+test_lodging_to_match = test_lodgings[:3]
+results = find_all_nearby_stations(test_lodging_to_match, test_stations, 5000)
+for lodging, stations in list(results.items())[:1]:
+    logger.info(f"Exemple: {lodging.name} → {len(stations)} bornes")
+
+
+

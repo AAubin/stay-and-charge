@@ -27,6 +27,10 @@ class Lodging:
         image_url = None
         return cls(place_id, name, lat, lng, address, extern_link, rating, user_rating_totals, image_url)
     
+    def __hash__(self):
+        return hash(self.place_id)
+    
+    
 @dataclass
 class ChargingStation:
     station_id: str
@@ -60,3 +64,5 @@ class ChargingStation:
         tarification = data.get('tarification')
         return cls(station_id, station_name, lat, lng, address, nominal_puissance, nb_spots, socket_types_available, access, schedule, gratuit, paiement_cb, tarification)
 
+    def __hash__(self):
+        return hash(self.station_id)
