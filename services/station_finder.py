@@ -3,8 +3,9 @@ logger = logging.getLogger(__name__)
 
 from models.schemas import Lodging, ChargingStation
 from services.geo import calculate_distance
+from data.cache import search_charging_stations
 
-def find_nearby_stations(lodging: Lodging, stations_list: list[ChargingStation], max_distance: float) -> list[tuple[ChargingStation, float]]:
+def find_nearby_stations(lodging: Lodging, max_distance: float) -> list[tuple[ChargingStation, float]]:
     """Retourne les bornes de recharge situées dans un rayon donné autour d'un logement.
 
     Args:
@@ -15,22 +16,18 @@ def find_nearby_stations(lodging: Lodging, stations_list: list[ChargingStation],
         Liste de tuples (ChargingStation, distance_km) pour les bornes dans le rayon,
         sans ordre garanti.
     """
-    close_station = []
+    nearby_station = []
     lodging_coord = (lodging.lat, lodging.lng)
-
-    logger.debug(f"nombre de stations à associer: {len(stations_list)}")
+    radius = max_distance*1000
+    stations_list = search_charging_stations(lodging_coord, radius=radius)
     for station in stations_list:
         station_coord = (station.lat, station.lng)
         distance = calculate_distance(lodging_coord, station_coord)
-        if distance <= max_distance:
-            close_station.append((station, distance))
-    logger.debug(f"Nombre de stations trouvées: {len(close_station)}")
-    if close_station:
-        close_station.sort(key=lambda x: x[1])
-        logger.debug(f"Station la plus proche: {close_station[0]}")
-    return close_station
+        nearby_station.append((station, distance))
+    logger.debug(f"Nombre de stations trouvées: {len(nearby_station)}")
+    return nearby_station
 
-def find_all_nearby_stations(lodgings_list: list[Lodging], stations_list: list[ChargingStation], max_distance: float) -> dict[Lodging, list[tuple[ChargingStation, float]]]:
+def find_all_nearby_stations(lodgings_list: list[Lodging], max_distance: float) -> dict[Lodging, list[tuple[ChargingStation, float]]]:
     """Associe chaque logement à ses bornes de recharge proches.
 
     Args:
@@ -43,6 +40,6 @@ def find_all_nearby_stations(lodgings_list: list[Lodging], stations_list: list[C
     """
     results = {}
     for lodging in lodgings_list:
-        results[lodging] = find_nearby_stations(lodging, stations_list, max_distance)
+        results[lodging] = find_nearby_stations(lodging, max_distance)
     logger.debug("Logements associées aux bornes")
     return results

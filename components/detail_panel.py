@@ -22,21 +22,17 @@ def lodging_details(details: dict):
         st.write(f"Nombre de votants: {details['user_rating_totals']}")
 
 def station_details(details: dict):
-    st.subheader(details['name'])
+    st.subheader(f"{details['store_name']} - {details['name']}")
     st.write(details['address'])
-    if details['nominal_power']:
-        st.write(f"Puissance nominale: {details['nominal_power']}")
+    if details['powers']:
+        st.write(f"Puissances disponibles: {details['powers']}")
     if details['nb_spots']:
-        st.write(f"{details['nb_spots']} places")
+        st.write(f"{details['nb_spots']} place(s).")
     if details['socket_types_available']:
         socket_str = ', '.join(details['socket_types_available']).replace('_', ' ')
         st.write(f"Types de prises: {socket_str}")
     if details['schedule']:
         st.write(f"Horaires: {details['schedule']}")
-    if details['free'] == 'True' or details['free'] == 'true':
-        st.write(f"Branchement gratuit !")
-    if details['paiement_cb'] == 'True' or details['paiement_cb'] == 'true':
-        st.write(f"Accepte la CB.")
     if details['tarification']:
         st.write('Tarification: ')
         st.write(details['tarification'])

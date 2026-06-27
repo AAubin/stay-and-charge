@@ -35,7 +35,7 @@ def search_charging_stations(search_coord: tuple[float, float], radius: int) -> 
             'select': FIELDS_SELECT,
             'limit': 100,
         }
-
+    
         logger.debug(f'Opendatasoft requests with location {search_coord} with {radius} meters radius.')
         resp = requests.get(OPENDATASOFT_URL, params=payload)
 
@@ -43,6 +43,7 @@ def search_charging_stations(search_coord: tuple[float, float], radius: int) -> 
 
         logger.debug("Request OK")
         data = resp.json()
+        logger.debug(f"total_count: {data.get('total_count')}")
         return [ChargingStation.from_api_response(res) for res in data['results']]
 
     except Exception as e:

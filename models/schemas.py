@@ -35,6 +35,7 @@ class Lodging:
 class ChargingStation:
     station_id: str
     name: str
+    store_name: str
     lat: float
     lng: float
     address: str
@@ -51,6 +52,7 @@ class ChargingStation:
     def from_api_response(cls, data: dict):
         station_id = data['id_station_itinerance']
         name = data['nom_station']
+        store_name = data['nom_enseigne']
         lat = data['consolidated_latitude']
         lng = data['consolidated_longitude']
         address = data['adresse_station']
@@ -62,7 +64,7 @@ class ChargingStation:
         free = data.get('gratuit')
         paiement_cb = data.get('paiement_cb')
         tarification = data.get('tarification')
-        return cls(station_id, name, lat, lng, address, nominal_power, nb_spots, socket_types_available, access, schedule, free, paiement_cb, tarification)
+        return cls(station_id, name, store_name, lat, lng, address, nominal_power, nb_spots, socket_types_available, access, schedule, free, paiement_cb, tarification)
 
     def __hash__(self):
         return hash(self.station_id)

@@ -7,7 +7,6 @@ import streamlit as st
 from config import DEFAULT_CENTER, DEFAULT_ZOOM_CITY, DEFAULT_ZOOM_FRANCE
 from services.geo import geocode_city
 from data.lodging import search_lodgings
-from data.charging_stations import search_charging_stations
 from services.station_finder import find_all_nearby_stations
 from components.map_view import render_map
 from components.filters import render_filters
@@ -22,21 +21,19 @@ filters = render_filters()
 update_map = filters['searched']
 
 if update_map:
-    if 'zoom' in st.session_state:
-        zoom = st.session_state['zoom']
-    else:
-        st.session_state['zoom'] = DEFAULT_ZOOM_CITY
-    zoom = st.session_state.get('zoom', DEFAULT_ZOOM_CITY)
     city = filters['city']
     st.session_state['center'] = geocode_city(city)
     lodgings = search_lodgings(st.session_state['center'], radius=filters['search_radius'])
-    stations = search_charging_stations(st.session_state['center'], radius=filters['search_radius'])
-    st.session_state['results'] = find_all_nearby_stations(lodgings, stations, max_distance=filters['max_distance'])
+    st.session_state['results'] = find_all_nearby_stations(lodgings, max_distance=filters['max_distance'])
 
 
 results = st.session_state.get('results', {})
 center = st.session_state.get('center', DEFAULT_CENTER)
-zoom = st.session_state.get('zoom', DEFAULT_ZOOM_FRANCE)
+if 'zoom' not in st.session_state:
+    zoom = DEFAULT_ZOOM_FRANCE
+    st.session_state['zoom'] = DEFAULT_ZOOM_CITY
+else:
+    zoom = st.session_state['zoom']
 
 event = render_map(results, center, zoom)
 if event.selection.objects:

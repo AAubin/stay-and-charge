@@ -5,9 +5,18 @@ App Streamlit affichant sur une carte interactive des logements (hôtels, locati
 ## Stack
 
 - Python 3.11+
-- [Streamlit](https://streamlit.io) + pydeck pour la carte
+- [Streamlit](https://streamlit.io) + pydeck pour la carte interactive
 - Google Places API (logements)
-- Données IRVE open data (bornes de recharge, France)
+- API Opendatasoft ODRÉ (bornes IRVE, open data, sans clé API)
+- geopy pour le géocodage et le calcul de distances
+
+## Fonctionnalités actuelles
+
+- Recherche de logements par ville via Google Places
+- Bornes de recharge recherchées autour de chaque logement (pas du centre ville)
+- Carte avec deux layers (logements / bornes), tooltip au survol
+- Panneau détail au clic sur un point
+- Sidebar : ville, rayon de recherche, distance max des bornes
 
 ## Installation
 
@@ -17,7 +26,7 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-Copie `.env.example` en `.env` et renseigne tes clés :
+Copie `.env.example` en `.env` et renseigne ta clé Google Places :
 
 ```bash
 cp .env.example .env
@@ -33,11 +42,21 @@ streamlit run app.py
 
 ```
 app.py                  # point d'entrée Streamlit
-config.py               # constantes et clés API
-data/                   # accès aux données externes
-services/               # géocodage, calcul de distances
-components/             # carte pydeck, filtres sidebar
-models/                 # dataclasses Lodging, ChargingStation
+config.py               # constantes et paramètres par défaut
+logging_manager.py      # configuration du logging
+data/
+  lodging.py            # appels Google Places
+  charging_stations.py  # appels API Opendatasoft (IRVE)
+  cache.py              # wrappers st.cache_data
+services/
+  geo.py                # géocodage, calcul de distance
+  station_finder.py     # recherche des bornes par logement
+components/
+  map_view.py           # carte pydeck + groupement des stations
+  filters.py            # sidebar de filtres
+  detail_panel.py       # panneau détail (st.dialog)
+models/
+  schemas.py            # dataclasses Lodging, ChargingStation
 tests/
 ```
 
