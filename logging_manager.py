@@ -37,7 +37,7 @@ def setup_logging():
             },
             'services': {
                     'handlers': ['console'],
-                    'level': logging.DEBUG,
+                    'level': logging.INFO,
                     'propagate': False
             },
             'components': {
@@ -47,7 +47,7 @@ def setup_logging():
             },
             'models': {
                     'handlers': ['console'],
-                    'level': logging.DEBUG,
+                    'level': logging.INFO,
                     'propagate': False
             }
         }

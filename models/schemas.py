@@ -34,35 +34,35 @@ class Lodging:
 @dataclass
 class ChargingStation:
     station_id: str
-    station_name: str
+    name: str
     lat: float
     lng: float
     address: str
-    nominal_puissance: Optional[float]
+    nominal_power: Optional[float]
     nb_spots: Optional[int]
     socket_types_available: list[str]
     access: Optional[str]
     schedule: Optional[str]
-    gratuit: Optional[str]
+    free: Optional[str]
     paiement_cb: Optional[str]
     tarification: Optional[str]
 
     @classmethod
     def from_api_response(cls, data: dict):
         station_id = data['id_station_itinerance']
-        station_name = data['nom_station']
+        name = data['nom_station']
         lat = data['consolidated_latitude']
         lng = data['consolidated_longitude']
         address = data['adresse_station']
-        nominal_puissance = data.get('puissance_nominale')
+        nominal_power = data.get('puissance_nominale')
         nb_spots = data.get('nbre_pdc')
         socket_types_available = [socket for socket in SOCKET_TYPES if data.get(socket) == 'True' or data.get(socket) == 'true']
         access = data.get('condition_acces')
         schedule = data.get('horaires')
-        gratuit = data.get('gratuit')
+        free = data.get('gratuit')
         paiement_cb = data.get('paiement_cb')
         tarification = data.get('tarification')
-        return cls(station_id, station_name, lat, lng, address, nominal_puissance, nb_spots, socket_types_available, access, schedule, gratuit, paiement_cb, tarification)
+        return cls(station_id, name, lat, lng, address, nominal_power, nb_spots, socket_types_available, access, schedule, free, paiement_cb, tarification)
 
     def __hash__(self):
         return hash(self.station_id)

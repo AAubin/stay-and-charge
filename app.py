@@ -3,40 +3,41 @@ from logging_manager import setup_logging
 setup_logging()
 logger = logging.getLogger(__name__)
 
-from data.cache import geocode_city, search_lodgings, search_charging_stations
-from services.geo import calculate_distance
+import streamlit as st
+from config import DEFAULT_CENTER, DEFAULT_ZOOM_CITY, DEFAULT_ZOOM_FRANCE
+from services.geo import geocode_city
+from data.lodging import search_lodgings
+from data.charging_stations import search_charging_stations
 from services.station_finder import find_all_nearby_stations
+from components.map_view import render_map
+from components.filters import render_filters
+from components.detail_panel import show_details
 
-test_city = 'Bordeaux'
-test_coord = geocode_city(test_city)
-logger.info(f"Coordonnées de la ville test: {test_coord}")
+st.set_page_config(layout='wide')
+st.title("Stay & Charge")
+st.markdown("Trouvez un logement avec une borne de recharge à proximité")
 
-test_lodgings = search_lodgings(test_coord)
-nb_lodgings = len(test_lodgings)
-logger.info(f"Nb de logements trouvés: {nb_lodgings}")
-lodging = None
-if nb_lodgings > 0:
-    lodging = test_lodgings[0]
-    logger.info(f"Exemple de logement: {lodging}")
+filters = render_filters()
 
-test_stations = search_charging_stations(test_coord)
-nb_stations = len(test_stations)
-logger.info(f"Nb de stations trouvées {nb_stations}")
-station = None
-if nb_stations > 0:
-    station = test_stations[0]
-    logger.info(f"Exemple de station: {station}")
+update_map = filters['searched']
 
-if lodging and station:
-    coord_lodg = (lodging.lat, lodging.lng)
-    coord_stat = (station.lat, station.lng)
-    test_dist = calculate_distance(coord_lodg, coord_stat)
-    logger.info(f"Exemple de cacul de distance {test_dist}")
-
-test_lodging_to_match = test_lodgings[:3]
-results = find_all_nearby_stations(test_lodging_to_match, test_stations, 5000)
-for lodging, stations in list(results.items())[:1]:
-    logger.info(f"Exemple: {lodging.name} → {len(stations)} bornes")
+if update_map:
+    if 'zoom' in st.session_state:
+        zoom = st.session_state['zoom']
+    else:
+        st.session_state['zoom'] = DEFAULT_ZOOM_CITY
+    zoom = st.session_state.get('zoom', DEFAULT_ZOOM_CITY)
+    city = filters['city']
+    st.session_state['center'] = geocode_city(city)
+    lodgings = search_lodgings(st.session_state['center'], radius=filters['search_radius'])
+    stations = search_charging_stations(st.session_state['center'], radius=filters['search_radius'])
+    st.session_state['results'] = find_all_nearby_stations(lodgings, stations, max_distance=filters['max_distance'])
 
 
+results = st.session_state.get('results', {})
+center = st.session_state.get('center', DEFAULT_CENTER)
+zoom = st.session_state.get('zoom', DEFAULT_ZOOM_FRANCE)
 
+event = render_map(results, center, zoom)
+if event.selection.objects:
+    show_details(event.selection.objects)

@@ -24,9 +24,10 @@ def find_nearby_stations(lodging: Lodging, stations_list: list[ChargingStation],
         distance = calculate_distance(lodging_coord, station_coord)
         if distance <= max_distance:
             close_station.append((station, distance))
-    close_station.sort(key=lambda x: x[1])
     logger.debug(f"Nombre de stations trouvées: {len(close_station)}")
-    logger.debug(f"Station la plus proche: {close_station[0]}")
+    if close_station:
+        close_station.sort(key=lambda x: x[1])
+        logger.debug(f"Station la plus proche: {close_station[0]}")
     return close_station
 
 def find_all_nearby_stations(lodgings_list: list[Lodging], stations_list: list[ChargingStation], max_distance: float) -> dict[Lodging, list[tuple[ChargingStation, float]]]:
