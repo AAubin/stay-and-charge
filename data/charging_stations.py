@@ -1,11 +1,23 @@
+import logging
+logger = logging.getLogger(__name__)
+
 from config import OPENDATASOFT_URL, FIELDS_SELECT
 from models.schemas import ChargingStation
 from math import cos, radians
 import requests
-import logging
-logger = logging.getLogger(__name__)
+
 
 def search_charging_stations(search_coord: tuple[float, float], radius: int) -> list[ChargingStation]:
+    """Recherche des bornes de recharge via l'API ODRÉ dans un rayon autour des coordonnées données.
+
+    Args:
+        search_coord: (latitude, longitude) du centre de recherche.
+        radius: rayon de recherche en mètres (utilisé pour construire un bounding box).
+    Returns:
+        liste de ChargingStation (max 100, triées par puissance décroissante).
+    Raises:
+        RuntimeError: en cas d'erreur API ou réseau.
+    """
     try:
         lat, lng = search_coord
         lat_delta = radius / 111000  # 1 degré ≈ 111 km
@@ -31,8 +43,6 @@ def search_charging_stations(search_coord: tuple[float, float], radius: int) -> 
 
         logger.debug("Request OK")
         data = resp.json()
-        logger.debug(f"total_count: {data.get('total_count')}")
-        logger.debug(data['results'][0])
         return [ChargingStation.from_api_response(res) for res in data['results']]
 
     except Exception as e:

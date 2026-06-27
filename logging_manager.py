@@ -2,6 +2,7 @@ import logging.config
 import logging
 
 def setup_logging():
+    """Configure le logging global — à appeler en premier dans app.py avant tout autre import."""
     config_dict = {
         'version': 1,
         'disable_existing_loggers': False,
@@ -26,12 +27,12 @@ def setup_logging():
         'loggers': {
             '': {  # root logger
                 'handlers': ['console'],
-                'level': logging.WARNING,
+                'level': logging.INFO,
                 'propagate': False
             },
             'data': {
                     'handlers': ['console'],
-                    'level': logging.DEBUG,
+                    'level': logging.INFO,
                     'propagate': False
             },
             'services': {
@@ -55,6 +56,13 @@ def setup_logging():
     logging.config.dictConfig(config_dict)
 
 def debugging(func):
+    """Décorateur qui loggue l'entrée et la sortie d'une fonction en mode DEBUG.
+
+    Args:
+        func: fonction à décorer.
+    Returns:
+        fonction wrappée avec logs DEBUG sur les args et le résultat.
+    """
     def wrapper(*args, **kwargs):
         logger = logging.getLogger(func.__module__)
         logger.debug(f"Entering: {func.__name__} with args: {args} kwargs: {kwargs}")

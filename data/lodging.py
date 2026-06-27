@@ -1,10 +1,21 @@
-from config import GOOGLE_PLACES_API_KEY, GOOGLE_PLACES_URL
-from models.schemas import Lodging
-import requests
 import logging
 logger = logging.getLogger(__name__)
 
+from config import GOOGLE_PLACES_API_KEY, GOOGLE_PLACES_URL
+from models.schemas import Lodging
+import requests
+
 def search_lodgings(search_coord: tuple[float, float], radius: int) -> list[Lodging]:
+    """Recherche des logements via Google Places Nearby Search autour des coordonnées données.
+
+    Args:
+        search_coord: (latitude, longitude) du centre de recherche.
+        radius: rayon de recherche en mètres (max 50 000).
+    Returns:
+        liste de Lodging triée par pertinence Google.
+    Raises:
+        RuntimeError: en cas d'erreur API ou réseau.
+    """
     try:
         lat, lng = search_coord
         payload = {
