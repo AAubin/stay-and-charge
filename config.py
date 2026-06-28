@@ -37,10 +37,14 @@ DEFAULT_ZOOM_FRANCE = 5
 DEFAULT_ZOOM_CITY = 12
 
 #Map icons
-ICON_ATLAS = "http://localhost:8501/app/static/spritesheet.png"
+ICON_ATLAS = "https://raw.githubusercontent.com/AAubin/stay-and-charge/main/static/spritesheet.png"
 ICON_MAPPING = {
     "hotel": {"x": 0, "y": 0, "width": 64, "height": 64, "anchorY": 64, "mask": True},
     "station": {"x": 64, "y": 0, "width": 64, "height": 64, "anchorY": 64, "mask": True}
 }
 COLOR_HOTEL = [209, 4, 4] # RGB rouge
 COLOR_STATION = [224, 219, 20] # RGB jaune
+COLOR_CIRCLE = {
+    'fill': [0, 120, 255, 20],
+    'line': [0, 120, 255, 105]
+}

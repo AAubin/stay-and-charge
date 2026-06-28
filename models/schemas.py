@@ -16,6 +16,13 @@ class Lodging:
 
     @classmethod
     def from_api_response(cls, data: dict) -> 'Lodging':
+        """Construit un Lodging à partir d'un résultat brut Google Places Nearby Search.
+
+        Args:
+            data: dict d'un résultat de l'API Google Places.
+        Returns:
+            Instance Lodging peuplée.
+        """
         place_id = data['place_id']
         name = data['name']
         lat = data['geometry']['location']['lat']
@@ -31,8 +38,9 @@ class Lodging:
         return hash(self.place_id)
     
     def __eq__(self, other):
-        return self.place_id == other.place_id
-    
+        if isinstance(other, Lodging):
+            return self.place_id == other.place_id
+        return NotImplemented 
     
 @dataclass
 class ChargingStation:
@@ -53,6 +61,13 @@ class ChargingStation:
 
     @classmethod
     def from_api_response(cls, data: dict) -> 'ChargingStation':
+        """Construit un ChargingStation à partir d'un résultat brut de l'API ODRÉ.
+
+        Args:
+            data: dict d'un résultat de l'API Opendatasoft IRVE.
+        Returns:
+            Instance ChargingStation peuplée.
+        """
         station_id = data['id_station_itinerance']
         name = data['nom_station']
         store_name = data['nom_enseigne']
@@ -73,4 +88,6 @@ class ChargingStation:
         return hash(self.station_id)
     
     def __eq__(self, other):
-        return self.station_id == other.station_id
+        if isinstance(other, ChargingStation):
+            return self.station_id == other.station_id
+        return NotImplemented 

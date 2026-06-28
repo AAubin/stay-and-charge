@@ -32,7 +32,7 @@ def setup_logging():
             },
             'data': {
                     'handlers': ['console'],
-                    'level': logging.DEBUG,
+                    'level': logging.INFO,
                     'propagate': False
             },
             'services': {
@@ -42,7 +42,7 @@ def setup_logging():
             },
             'components': {
                     'handlers': ['console'],
-                    'level': logging.INFO,
+                    'level': logging.DEBUG,
                     'propagate': False
             },
             'models': {

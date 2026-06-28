@@ -9,11 +9,12 @@ def render_filters() -> dict:
 
     Returns:
         Dictionnaire avec les clés : city (str), search_radius (int, en mètres),
-        max_distance (int, en km), searched (bool).
+        max_distance (int, en km), searched (bool), min_rating (float),
+        socket_types_wanted (list[str], labels lisibles), min_power (int, en kW).
     """
     with st.sidebar:
         city = st.text_input(label='Ville ou code postal')
-        radius = st.number_input(label='Rayon de recherche en km (max 50 km))', min_value=0, value=20, max_value=50)
+        radius = st.number_input(label='Rayon de recherche (km)', min_value=0, value=20, max_value=50, help="max 50 km")
         max_distance = st.selectbox(label='Distance max des bornes de recharge (km)', options=[1, 5, 10, 15, 20])
         searched = st.button(label='Recherche')
         st.divider()

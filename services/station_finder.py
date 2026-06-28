@@ -5,6 +5,7 @@ from models.schemas import Lodging, ChargingStation
 from services.geo import calculate_distance
 from data.cache import search_charging_stations
 from config import SOCKET_TYPES_LABELS
+from collections import defaultdict, Counter
 
 def find_nearby_stations(lodging: Lodging, max_distance: float) -> list[tuple[ChargingStation, float]]:
     """Interroge l'API ODRÉ autour du logement et retourne les bornes trouvées avec leur distance.
@@ -79,3 +80,53 @@ def filter_stations(results: dict[Lodging, list[tuple[ChargingStation, float]]],
                 filtered_results[key] = filtered_stations
         return filtered_results
     return results
+
+def create_stations_data(results: dict[Lodging, list[tuple[ChargingStation, float]]]) -> list[dict]:
+    """Agrège les bornes de tous les logements en groupes par coordonnées arrondies.
+
+    Les stations au même emplacement physique (±0.0001°) sont fusionnées : valeurs les plus
+    fréquentes pour les champs texte, maximum pour nb_spots, minimum pour la distance.
+
+    Args:
+        results: dictionnaire {Lodging: [(ChargingStation, distance_km), ...]}.
+    Returns:
+        Liste de dicts agrégés prêts pour l'affichage (carte ou liste).
+    """
+    groups = defaultdict(list)
+    distance_stations = defaultdict(list)
+    for stations in results.values():
+        for station, distance in stations:
+            key = (round(station.lat, 4), round(station.lng, 4))
+            groups[key].append(station)
+            distance_stations[key].append(distance)
+    stations_data = []
+    for (key, group), dist in zip(groups.items(), distance_stations.values()):
+        stations_data.append({
+            'lat': key[0],
+            'lng': key[1],
+            'name': most_common_or_none(s.name for s in group),
+            'store_name': most_common_or_none(s.store_name for s in group),
+            'address': most_common_or_none(s.address for s in group if s .address),
+            'schedule': most_common_or_none(s.schedule for s in group if s.schedule),
+            'nb_spots': max((s.nb_spots for s in group if s.nb_spots), default=None),
+            'powers': " / ".join(str(p) for p in sorted({s.nominal_power for s in group if s.nominal_power})),
+            'tarification': ", ".join(set(s.tarification for s in group if s.tarification)),
+            'socket_types_available': list({t for s in group for t in s.socket_types_available}),
+            'distance': min(dist, default=None),
+            'icon': 'station'
+        })
+    return stations_data
+
+def most_common_or_none(values):
+    """Retourne la valeur la plus fréquente d'un itérable, ou None si vide.
+
+    Args:
+        values: itérable de valeurs.
+    Returns:
+        Valeur la plus fréquente, ou None si l'itérable est vide.
+    """
+    counter = Counter(values).most_common(1)
+    if counter:
+        return counter[0][0]
+    return None
+
