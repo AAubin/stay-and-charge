@@ -15,7 +15,7 @@ class Lodging:
     image_url: Optional[str]
 
     @classmethod
-    def from_api_response(cls, data: dict):
+    def from_api_response(cls, data: dict) -> 'Lodging':
         place_id = data['place_id']
         name = data['name']
         lat = data['geometry']['location']['lat']
@@ -29,6 +29,9 @@ class Lodging:
     
     def __hash__(self):
         return hash(self.place_id)
+    
+    def __eq__(self, other):
+        return self.place_id == other.place_id
     
     
 @dataclass
@@ -49,7 +52,7 @@ class ChargingStation:
     tarification: Optional[str]
 
     @classmethod
-    def from_api_response(cls, data: dict):
+    def from_api_response(cls, data: dict) -> 'ChargingStation':
         station_id = data['id_station_itinerance']
         name = data['nom_station']
         store_name = data['nom_enseigne']
@@ -68,3 +71,6 @@ class ChargingStation:
 
     def __hash__(self):
         return hash(self.station_id)
+    
+    def __eq__(self, other):
+        return self.station_id == other.station_id

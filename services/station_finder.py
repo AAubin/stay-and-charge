@@ -12,7 +12,7 @@ def find_nearby_stations(lodging: Lodging, max_distance: float) -> list[tuple[Ch
         lodging: le logement de référence.
         max_distance: rayon de recherche en kilomètres.
     Returns:
-        Liste de tuples (ChargingStation, distance_km) triés par distance croissante.
+        Liste de tuples (ChargingStation, distance_km).
     """
     nearby_station = []
     lodging_coord = (lodging.lat, lodging.lng)
