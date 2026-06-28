@@ -25,12 +25,14 @@ def render_map(results: dict[Lodging, list[tuple[ChargingStation, float]]], cent
         lodgings_data = [{**dataclasses.asdict(l), 'nb_nearby_station': len(s), 'icon': 'hotel'}  for l, s in results.items()]
 
         groups = defaultdict(list)
+        distance_stations = defaultdict(list)
         for stations in results.values():
-            for station, _ in stations:
+            for station, distance in stations:
                 key = (round(station.lat, 4), round(station.lng, 4))
                 groups[key].append(station)
+                distance_stations[key].append(distance)
         stations_data = []
-        for key, group in groups.items():
+        for (key, group), dist in zip(groups.items(), distance_stations.values()):
             stations_data.append({
                 'lat': key[0],
                 'lng': key[1],
@@ -42,6 +44,7 @@ def render_map(results: dict[Lodging, list[tuple[ChargingStation, float]]], cent
                 'powers': " / ".join(str(p) for p in sorted({s.nominal_power for s in group if s.nominal_power})),
                 'tarification': ", ".join(set(s.tarification for s in group if s.tarification)),
                 'socket_types_available': list({t for s in group for t in s.socket_types_available}),
+                'distance': min(dist, default=None),
                 'icon': 'station'
             })
         

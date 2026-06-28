@@ -6,7 +6,7 @@ from geopy.distance import geodesic
 
 
 def calculate_distance(coord_1: tuple[float, float], coord_2: tuple[float, float]) -> float:
-    """Calcule la distance à vol d'oiseau entre deux points géographiques.
+    """Calcule la distance à vol d'oiseau entre deux points géographiques en kilomètres.
 
     Args:
         coord_1: (latitude, longitude) du premier point.

@@ -1,6 +1,7 @@
 import logging
 logger = logging.getLogger(__name__)
 
+from config import SOCKET_TYPES_LABELS
 import streamlit as st
 
 @st.dialog('Détails:')
@@ -38,7 +39,7 @@ def station_details(details: dict) -> None:
 
     Args:
         details: dict agrégé de la borne issu de stations_data (champs : name, store_name,
-                 address, powers, nb_spots, socket_types_available, schedule, tarification).
+                 address, powers, nb_spots, socket_types_available, schedule, tarification, distance).
     """
     st.subheader(f"{details['store_name']} - {details['name']}")
     st.write(details['address'])
@@ -47,10 +48,13 @@ def station_details(details: dict) -> None:
     if details['nb_spots']:
         st.write(f"{details['nb_spots']} place(s).")
     if details['socket_types_available']:
-        socket_str = ', '.join(details['socket_types_available']).replace('_', ' ')
+        socket_labels = [SOCKET_TYPES_LABELS[code] for code in details['socket_types_available']]
+        socket_str = ', '.join(socket_labels)
         st.write(f"Types de prises: {socket_str}")
     if details['schedule']:
         st.write(f"Horaires: {details['schedule']}")
     if details['tarification']:
         st.write('Tarification: ')
         st.write(details['tarification'])
+    if details['distance']:
+        st.write(f"Distance du logement le plus proche: {round(details['distance'], 2)} km")
