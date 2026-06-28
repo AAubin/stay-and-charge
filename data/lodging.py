@@ -26,7 +26,7 @@ def search_lodgings(search_coord: tuple[float, float], radius: int) -> list[Lodg
             'language': "fr"
         }
 
-        logger.debug(f'Nearbysearch requests with location {payload["location"]} with {payload["location"]} meters radius.')
+        logger.debug(f'Nearbysearch requests with location {payload["location"]} with {payload["radius"]} meters radius.')
         resp = requests.get(GOOGLE_PLACES_URL, params=payload)
 
         resp.raise_for_status()
@@ -34,7 +34,9 @@ def search_lodgings(search_coord: tuple[float, float], radius: int) -> list[Lodg
         data = resp.json()
         if data["status"] == "OK":
             logger.debug("Request OK")
-            return [Lodging.from_api_response(res) for res in data['results']]
+            lodging_found = [Lodging.from_api_response(res) for res in data['results']]
+            logger.debug(f"Nb de logements: {len(lodging_found)}")
+            return lodging_found
         elif data["status"] == "ZERO_RESULTS":
             logger.debug("No results") 
             return []

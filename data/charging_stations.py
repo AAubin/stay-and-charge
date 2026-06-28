@@ -43,7 +43,7 @@ def search_charging_stations(search_coord: tuple[float, float], radius: int) -> 
 
         logger.debug("Request OK")
         data = resp.json()
-        logger.debug(f"total_count: {data.get('total_count')}")
+        logger.debug(f"Nb stations: {data.get('total_count')}")
         return [ChargingStation.from_api_response(res) for res in data['results']]
 
     except Exception as e:

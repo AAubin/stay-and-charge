@@ -23,3 +23,12 @@ SOCKET_TYPES = ['prise_type_combo_ccs', 'prise_type_chademo', 'prise_type_2', 'p
 DEFAULT_CENTER = (47.0811658, 2.399125)
 DEFAULT_ZOOM_FRANCE = 5
 DEFAULT_ZOOM_CITY = 12
+
+#Map icons
+ICON_ATLAS = "http://localhost:8501/app/static/spritesheet.png"
+ICON_MAPPING = {
+    "hotel": {"x": 0, "y": 0, "width": 64, "height": 64, "anchorY": 64, "mask": True},
+    "station": {"x": 64, "y": 0, "width": 64, "height": 64, "anchorY": 64, "mask": True}
+}
+COLOR_HOTEL = [209, 4, 4] # RGB rouge
+COLOR_STATION = [224, 219, 20] # RGB jaune

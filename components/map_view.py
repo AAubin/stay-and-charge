@@ -2,6 +2,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 from models.schemas import Lodging, ChargingStation
+from config import ICON_ATLAS, ICON_MAPPING, COLOR_HOTEL, COLOR_STATION
 import dataclasses
 from collections import defaultdict, Counter
 import pydeck as pdk
@@ -12,7 +13,7 @@ def render_map(results: dict[Lodging, list[tuple[ChargingStation, float]]], cent
     tooltip = None
 
     if results:
-        lodgings_data = [{**dataclasses.asdict(l), 'nb_nearby_station': len(s)}  for l, s in results.items()]
+        lodgings_data = [{**dataclasses.asdict(l), 'nb_nearby_station': len(s), 'icon': 'hotel'}  for l, s in results.items()]
 
         groups = defaultdict(list)
         for stations in results.values():
@@ -31,28 +32,37 @@ def render_map(results: dict[Lodging, list[tuple[ChargingStation, float]]], cent
                 'nb_spots': max(s.nb_spots for s in group if s.nb_spots),
                 'powers': " / ".join(str(p) for p in sorted({s.nominal_power for s in group if s.nominal_power})),
                 'tarification': ", ".join(set(s.tarification for s in group if s.tarification)),
-                'socket_types_available': list({t for s in group for t in s.socket_types_available})
+                'socket_types_available': list({t for s in group for t in s.socket_types_available}),
+                'icon': 'station'
             })
         
         logger.debug(len(stations_data))
 
         lodging_layer = pdk.Layer(
-            type = 'ScatterplotLayer',
+            type = 'IconLayer',
             id = 'lodging_layer',
             data = lodgings_data,
             get_position = ['lng', 'lat'],
-            get_color = [209, 41, 10],
-            get_radius = 50,
+            get_icon = 'icon',
+            get_size = 4,
+            size_scale = 3,
+            icon_atlas = ICON_ATLAS,
+            icon_mapping = ICON_MAPPING,
+            get_color = COLOR_HOTEL,
             pickable = True
         )
 
         station_layer = pdk.Layer(
-            type = 'ScatterplotLayer',
+            type = 'IconLayer',
             id = 'station_layer',
             data = stations_data,
             get_position = ['lng', 'lat'],
-            get_color = [10, 17, 209],
-            get_radius = 30,
+            get_icon = 'icon',
+            get_size = 4,
+            size_scale = 3,
+            icon_atlas = ICON_ATLAS,
+            icon_mapping = ICON_MAPPING,
+            get_color = COLOR_STATION,
             pickable = True
         )
 
