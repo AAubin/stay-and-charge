@@ -34,11 +34,11 @@ def render_map(results: dict[Lodging, list[tuple[ChargingStation, float]]], cent
             stations_data.append({
                 'lat': key[0],
                 'lng': key[1],
-                'name': Counter(s.name for s in group).most_common(1)[0][0],
-                'store_name': Counter(s.store_name for s in group).most_common(1)[0][0],
-                'address': Counter(s.address for s in group if s .address).most_common(1)[0][0],
-                'schedule': Counter(s.schedule for s in group if s.schedule).most_common(1)[0][0],
-                'nb_spots': max(s.nb_spots for s in group if s.nb_spots),
+                'name': most_common_or_none(s.name for s in group),
+                'store_name': most_common_or_none(s.store_name for s in group),
+                'address': most_common_or_none(s.address for s in group if s .address),
+                'schedule': most_common_or_none(s.schedule for s in group if s.schedule),
+                'nb_spots': max((s.nb_spots for s in group if s.nb_spots), default=None),
                 'powers': " / ".join(str(p) for p in sorted({s.nominal_power for s in group if s.nominal_power})),
                 'tarification': ", ".join(set(s.tarification for s in group if s.tarification)),
                 'socket_types_available': list({t for s in group for t in s.socket_types_available}),
@@ -83,3 +83,8 @@ def render_map(results: dict[Lodging, list[tuple[ChargingStation, float]]], cent
 
     return st.pydeck_chart(deck, on_select="rerun", selection_mode="single-object")
 
+def most_common_or_none(values: set):
+    counter = Counter(values).most_common(1)
+    if counter:
+        return counter[0][0]
+    return None

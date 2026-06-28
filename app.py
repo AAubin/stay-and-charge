@@ -18,15 +18,27 @@ st.markdown("Trouvez un logement avec une borne de recharge à proximité")
 
 filters = render_filters()
 
-update_map = filters['searched']
+if filters['searched']:
+    try:
+        with st.spinner("Recherche en cours..."):
+            city = filters['city']
+            center = geocode_location(city)
+            lodgings = search_lodgings(center, radius=filters['search_radius'])
+            if not lodgings:
+                st.info("Aucun logement trouvé.")
+                st.stop()
+            if results_are_distant(center, lodgings, THRESHOLD_KM):
+                st.info('Les résultats semblent éloignés du centre de la recherche, naviguer sur la carte ou réduisez le rayon de recherche')
+            results = find_all_nearby_stations(lodgings, max_distance=filters['max_distance'])
+    except ValueError:
+        st.error("Ville introuvable, vérifiez l'orthographe ou le code postal")
+        st.stop()
+    except Exception as e:
+        st.error(f"Erreur api: {e}")
+        st.stop()
 
-if update_map:
-    city = filters['city']
-    st.session_state['center'] = geocode_location(city)
-    lodgings = search_lodgings(st.session_state['center'], radius=filters['search_radius'])
-    if results_are_distant(st.session_state['center'], lodgings, THRESHOLD_KM):
-        st.info('Les résultats semblent éloignés du centre de la recherche, naviguer sur la carte ou réduisez le rayon de recherche')
-    st.session_state['results'] = find_all_nearby_stations(lodgings, max_distance=filters['max_distance'])
+    st.session_state['center'] = center
+    st.session_state['results'] = results
 
 results = st.session_state.get('results', {})
 center = st.session_state.get('center', DEFAULT_CENTER)
