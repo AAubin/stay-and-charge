@@ -14,7 +14,7 @@ def search_charging_stations(search_coord: tuple[float, float], radius: int) -> 
         search_coord: (latitude, longitude) du centre de recherche.
         radius: rayon de recherche en mètres (utilisé pour construire un bounding box).
     Returns:
-        liste de ChargingStation (max 100, triées par puissance décroissante).
+        liste de ChargingStation (max 100, dans l'ordre retourné par l'API).
     Raises:
         RuntimeError: en cas d'erreur API ou réseau.
     """

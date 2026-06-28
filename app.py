@@ -5,8 +5,7 @@ logger = logging.getLogger(__name__)
 
 import streamlit as st
 from config import DEFAULT_CENTER, DEFAULT_ZOOM_CITY, DEFAULT_ZOOM_FRANCE
-from services.geo import geocode_city
-from data.lodging import search_lodgings
+from data.cache import search_lodgings, geocode_location
 from services.station_finder import find_all_nearby_stations
 from components.map_view import render_map
 from components.filters import render_filters
@@ -22,7 +21,7 @@ update_map = filters['searched']
 
 if update_map:
     city = filters['city']
-    st.session_state['center'] = geocode_city(city)
+    st.session_state['center'] = geocode_location(city)
     lodgings = search_lodgings(st.session_state['center'], radius=filters['search_radius'])
     st.session_state['results'] = find_all_nearby_stations(lodgings, max_distance=filters['max_distance'])
 

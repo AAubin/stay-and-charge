@@ -7,11 +7,11 @@ from geopy.exc import GeocoderTimedOut, GeocoderServiceError
 
 geolocator = Nominatim(user_agent="stay-and-charge")
 
-def geocode_city(city_name: str) -> tuple[float, float]:
+def geocode_location(city_name: str) -> tuple[float, float]:
     """Retourne les coordonnées d'une ville via Nominatim.
 
     Args:
-        city_name: nom de la ville à géocoder.
+        city_name: nom ou code postal de la ville à géocoder.
     Returns:
         (latitude, longitude) en degrés décimaux.
     Raises:
@@ -19,7 +19,7 @@ def geocode_city(city_name: str) -> tuple[float, float]:
         RuntimeError: en cas d'erreur réseau ou de timeout.
     """
     try:
-        location = geolocator.geocode(city_name)
+        location = geolocator.geocode(city_name, country_codes="fr")
         if location:
             logger.debug(f"Coordinates found for {city_name}: {location.latitude}, {location.longitude}")
             return (location.latitude, location.longitude)
@@ -44,5 +44,13 @@ def zoom_to_radius(zoom: int, lat: float) -> float:
     # A implémenter plus tard
     pass
 
-def calculate_distance (coord_1: tuple[float, float], coord_2: tuple[float, float]) -> float:
+def calculate_distance(coord_1: tuple[float, float], coord_2: tuple[float, float]) -> float:
+    """Calcule la distance à vol d'oiseau entre deux points géographiques.
+
+    Args:
+        coord_1: (latitude, longitude) du premier point.
+        coord_2: (latitude, longitude) du second point.
+    Returns:
+        Distance en kilomètres.
+    """
     return geodesic(coord_1, coord_2).km

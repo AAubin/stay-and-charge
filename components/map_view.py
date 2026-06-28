@@ -8,7 +8,16 @@ from collections import defaultdict, Counter
 import pydeck as pdk
 import streamlit as st
 
-def render_map(results: dict[Lodging, list[tuple[ChargingStation, float]]], center: tuple[float, float], zoom: int):
+def render_map(results: dict[Lodging, list[tuple[ChargingStation, float]]], center: tuple[float, float], zoom: int)-> st.delta_generator.DeltaGenerator:
+    """Construit et affiche la carte pydeck avec les layers logements et bornes.
+
+    Args:
+        results: dictionnaire {Lodging: [(ChargingStation, distance_km), ...]} issu de find_all_nearby_stations.
+        center: (latitude, longitude) du centre initial de la carte.
+        zoom: niveau de zoom initial (5 = France entière, 12 = ville).
+    Returns:
+        Evénement de sélection pydeck (contient les données du point cliqué via .selection.objects).
+    """
     layers = None
     tooltip = None
 

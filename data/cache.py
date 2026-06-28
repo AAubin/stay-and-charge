@@ -1,12 +1,12 @@
 from streamlit import cache_data
 from data.lodging import search_lodgings as _search_lodgings
 from data.charging_stations import search_charging_stations as _search_charging_stations
-from services.geo import geocode_city as _geocode_city
+from services.geo import geocode_location as _geocode_location
 from models.schemas import Lodging, ChargingStation
 
 @cache_data(ttl=3600)
-def geocode_city(city_name: str) -> tuple[float, float]:
-    return _geocode_city(city_name)
+def geocode_location(city_name: str) -> tuple[float, float]:
+    return _geocode_location(city_name)
 
 @cache_data(ttl=3600)
 def search_lodgings(search_coord: tuple[float, float], radius: int = 50000) -> list[Lodging]:

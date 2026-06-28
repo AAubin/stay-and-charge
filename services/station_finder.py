@@ -6,15 +6,13 @@ from services.geo import calculate_distance
 from data.cache import search_charging_stations
 
 def find_nearby_stations(lodging: Lodging, max_distance: float) -> list[tuple[ChargingStation, float]]:
-    """Retourne les bornes de recharge situées dans un rayon donné autour d'un logement.
+    """Interroge l'API ODRÉ autour du logement et retourne les bornes trouvées avec leur distance.
 
     Args:
         lodging: le logement de référence.
-        stations_list: liste de toutes les bornes à filtrer.
-        max_distance: rayon maximum en mètres.
+        max_distance: rayon de recherche en kilomètres.
     Returns:
-        Liste de tuples (ChargingStation, distance_km) pour les bornes dans le rayon,
-        sans ordre garanti.
+        Liste de tuples (ChargingStation, distance_km) triés par distance croissante.
     """
     nearby_station = []
     lodging_coord = (lodging.lat, lodging.lng)
@@ -28,12 +26,11 @@ def find_nearby_stations(lodging: Lodging, max_distance: float) -> list[tuple[Ch
     return nearby_station
 
 def find_all_nearby_stations(lodgings_list: list[Lodging], max_distance: float) -> dict[Lodging, list[tuple[ChargingStation, float]]]:
-    """Associe chaque logement à ses bornes de recharge proches.
+    """Associe chaque logement à ses bornes de recharge proches via l'API ODRÉ.
 
     Args:
         lodgings_list: liste des logements à traiter.
-        stations_list: liste de toutes les bornes candidates.
-        max_distance: rayon maximum en mètres.
+        max_distance: rayon de recherche en kilomètres.
     Returns:
         Dictionnaire {Lodging: [(ChargingStation, distance_km), ...]} pour chaque logement.
         Un logement sans borne proche est associé à une liste vide.
