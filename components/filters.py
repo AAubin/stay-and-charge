@@ -12,7 +12,7 @@ def render_filters() -> dict:
     """
     with st.sidebar:
         city = st.text_input(label='Ville ou code postal')
-        radius = st.number_input(label='Rayon de recherche (km)', min_value=0, value=30)
+        radius = st.number_input(label='Rayon de recherche (km)', min_value=0, value=20)
         max_distance = st.selectbox(label='Distance max des bornes de recharge (km)', options=[1, 5, 10, 15, 20])
         searched = st.button(label='Recherche')
     return {
