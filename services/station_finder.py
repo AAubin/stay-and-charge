@@ -125,8 +125,8 @@ def create_stations_data(results: dict[Lodging, list[tuple[ChargingStation, floa
             'schedule': most_common_or_none(s.schedule for s in group if s.schedule),
             'nb_spots': max((s.nb_spots for s in group if s.nb_spots), default=None),
             'powers': " / ".join(str(p) for p in sorted({s.nominal_power for s in group if s.nominal_power})),
-            'tarification': ", ".join(set(s.tarification for s in group if s.tarification)),
-            'socket_types_available': list({t for s in group for t in s.socket_types_available}),
+            'tarification': ", ".join(sorted(set(s.tarification for s in group if s.tarification))),
+            'socket_types_available': sorted({t for s in group for t in s.socket_types_available}),
             'distance': min(dist, default=None),
             'icon': 'station'
         })

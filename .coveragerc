@@ -1,0 +1,11 @@
+[run]
+source = .
+omit =
+    tests/*
+    .venv/*
+    */__init__.py
+    components/*
+    data/cache.py
+    app.py
+    logging_manager.py
+    config.py
