@@ -6,11 +6,11 @@ from geopy.exc import GeocoderTimedOut, GeocoderServiceError
 
 geolocator = Nominatim(user_agent="stay-and-charge")
 
-def geocode_location(city_name: str, country_codes: str = 'fr') -> tuple[float, float]:
+def geocode_location(city: str|int, country_codes: str = 'fr') -> tuple[float, float]:
     """Retourne les coordonnées d'une ville via Nominatim.
 
     Args:
-        city_name: nom ou code postal de la ville à géocoder.
+        city: nom ou code postal de la ville à géocoder.
     Returns:
         (latitude, longitude) en degrés décimaux.
     Raises:
@@ -18,9 +18,9 @@ def geocode_location(city_name: str, country_codes: str = 'fr') -> tuple[float, 
         RuntimeError: en cas d'erreur réseau ou de timeout.
     """
     try:
-        location = geolocator.geocode(city_name, country_codes=country_codes)
+        location = geolocator.geocode(city, country_codes=country_codes)
         if location:
-            logger.debug(f"Coordinates found for {city_name}: {location.latitude}, {location.longitude}")
+            logger.debug(f"Coordinates found for {city}: {location.latitude}, {location.longitude}")
             return (location.latitude, location.longitude)
         else:
             logger.warning("City not found")
