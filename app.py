@@ -20,7 +20,11 @@ map_tab, list_tab = st.tabs(['Carte', 'Liste'])
 
 filters = render_filters()
 
-if filters['searched']:
+has_query_params = bool(st.query_params.get('city'))
+first_load = 'results' not in st.session_state
+should_search = filters['searched'] or (has_query_params and first_load)
+
+if should_search:
     try:
         with st.spinner("Recherche en cours..."):
             city = filters['city']
@@ -41,6 +45,13 @@ if filters['searched']:
 
     st.session_state['center'] = center
     st.session_state['results'] = results
+
+    st.query_params['city'] = city
+    st.query_params['radius'] = filters['search_radius']//1000
+    st.query_params['max_distance'] = filters['max_distance']
+    st.query_params['min_rating'] = filters['min_rating']
+    st.query_params['socket_types_wanted'] = filters['socket_types_wanted']
+    st.query_params['min_power'] = filters['min_power']
 
 results = filter_stations(filter_lodging(st.session_state.get('results', {}), filters['min_rating']), filters['min_power'], filters['socket_types_wanted'])
 

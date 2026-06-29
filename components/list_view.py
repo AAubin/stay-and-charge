@@ -2,7 +2,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 from models.schemas import Lodging, ChargingStation
-from services.station_finder import create_stations_data
+from services.station_finder import create_stations_data, count_grouped_stations
 from components.render_details import render_station_details
 import streamlit as st
 
@@ -25,7 +25,7 @@ def render_list(results: dict[Lodging, list[tuple[ChargingStation, float]]]):
                         with col_info:
                             st.markdown(f"**{lodging.name}**")
                             st.caption(f"{lodging.address}")
-                            st.caption(f"Note : {lodging.rating} - {len(stations)} stations à proximité")
+                            st.caption(f"Note : {lodging.rating} - {count_grouped_stations(stations)} stations à proximité")
                             st.page_link(lodging.extern_link, label="Ouvrir dans Google Maps")
                         with col_btn:
                             st.button("Bornes", key=lodging.place_id, on_click=select, args=(lodging,))

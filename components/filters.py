@@ -13,15 +13,20 @@ def render_filters() -> dict:
         socket_types_wanted (list[str], labels lisibles), min_power (int, en kW).
     """
     with st.sidebar:
-        city = st.text_input(label='Ville ou code postal')
-        radius = st.number_input(label='Rayon de recherche (km)', min_value=0, value=20, max_value=50, help="max 50 km")
-        max_distance = st.selectbox(label='Distance max des bornes de recharge (km)', options=[1, 5, 10, 15, 20])
+        city = st.text_input(label='Ville ou code postal', value=st.query_params.get('city', ''))
+        radius = st.number_input(label='Rayon de recherche (km)', min_value=0, max_value=50, value=int(st.query_params.get('radius', 10)), help="max 50 km")
+        max_distance_options = [1, 2, 5, 10, 20]
+        query_index = 0
+        if st.query_params.get('max_distance'):
+            query_index = max_distance_options.index(int(st.query_params.get('max_distance')))
+        max_distance = st.selectbox(label='Distance max des bornes de recharge (km)', options=max_distance_options, index=query_index)
         searched = st.button(label='Recherche')
         st.divider()
-        min_rating = st.slider(label="Note minimal du logement:", min_value=0.0, max_value=5.0, value=0.0, step=0.1, format="%0.1f")
+        min_rating = st.slider(label="Note minimal du logement:", min_value=0.0, max_value=5.0, step=0.1, value=float(st.query_params.get('min_rating', 0.0)), format="%0.1f")
         st.divider()
-        socket_types_wanted = st.multiselect(label="Types de prise", options=SOCKET_TYPES_LABELS.values(), default=SOCKET_TYPES_LABELS.values())
-        min_power = st.slider(label="Puissance minimale (kW)", min_value=POWER_BOUNDS[0], max_value=POWER_BOUNDS[1], value=0, step=10)
+        default_sockets = st.query_params.get_all('socket_types_wanted') or list(SOCKET_TYPES_LABELS.values())
+        socket_types_wanted = st.multiselect(label="Types de prise", options=SOCKET_TYPES_LABELS.values(), default=default_sockets)
+        min_power = st.slider(label="Puissance minimale (kW)", min_value=POWER_BOUNDS[0], max_value=POWER_BOUNDS[1], step=10, value=int(st.query_params.get('min_power', 0)))
 
     return {
         'city': city,

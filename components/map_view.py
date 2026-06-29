@@ -3,7 +3,7 @@ logger = logging.getLogger(__name__)
 
 from models.schemas import Lodging, ChargingStation
 from config import ICON_ATLAS, ICON_MAPPING, COLOR_HOTEL, COLOR_STATION, COLOR_CIRCLE
-from services.station_finder import create_stations_data
+from services.station_finder import create_stations_data, count_grouped_stations
 import dataclasses
 import pydeck as pdk
 import streamlit as st
@@ -23,7 +23,7 @@ def render_map(results: dict[Lodging, list[tuple[ChargingStation, float]]], cent
     tooltip = None
 
     if results:
-        lodgings_data = [{**dataclasses.asdict(l), 'nb_nearby_station': len(s), 'icon': 'hotel'}  for l, s in results.items()]
+        lodgings_data = [{**dataclasses.asdict(l), 'nb_nearby_station': count_grouped_stations(s), 'icon': 'hotel'}  for l, s in results.items()]
         logger.debug(f"{len(lodgings_data)} logements trouvées")
 
         stations_data = create_stations_data(results)

@@ -81,6 +81,21 @@ def filter_stations(results: dict[Lodging, list[tuple[ChargingStation, float]]],
         return filtered_results
     return results
 
+
+def count_grouped_stations(stations: list[tuple[ChargingStation, float]]) -> int:
+    """Compte le nombre de sites physiques distincts parmi une liste de bornes.
+
+    Deux bornes sont considérées au même site si leurs coordonnées sont identiques
+    une fois arrondies à 4 décimales (±11 mètres).
+
+    Args:
+        stations: liste de tuples (ChargingStation, distance_km).
+    Returns:
+        Nombre de sites distincts.
+    """
+    return len({(round(s.lat, 4), round(s.lng, 4)) for s, _ in stations})
+
+
 def create_stations_data(results: dict[Lodging, list[tuple[ChargingStation, float]]]) -> list[dict]:
     """Agrège les bornes de tous les logements en groupes par coordonnées arrondies.
 
