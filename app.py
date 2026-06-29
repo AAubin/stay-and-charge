@@ -3,8 +3,8 @@ from logging_manager import setup_logging
 setup_logging()
 logger = logging.getLogger(__name__)
 
-import streamlit as st
 from config import DEFAULT_CENTER, DEFAULT_ZOOM_CITY, DEFAULT_ZOOM_FRANCE, THRESHOLD_KM
+import streamlit as st
 from data.cache import search_lodgings, geocode_location
 from services.station_finder import find_all_nearby_stations, filter_lodging, filter_stations
 from services.geo import results_are_distant
@@ -12,6 +12,7 @@ from components.map_view import render_map
 from components.list_view import render_list
 from components.filters import render_filters
 from components.render_details import render_detail_panels
+from components.footer import render_footer
 
 st.set_page_config(layout='wide')
 st.title("Stay & Charge")
@@ -64,3 +65,5 @@ with map_tab:
 
 with list_tab:
     render_list(results)
+
+render_footer()

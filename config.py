@@ -1,11 +1,13 @@
 import os
 from dotenv import load_dotenv
+import streamlit as st
 
 """
 Environment variables
 """
 load_dotenv()
-GOOGLE_PLACES_API_KEY = os.getenv('GOOGLE_PLACES_API_KEY')
+
+GOOGLE_PLACES_API_KEY = os.getenv('GOOGLE_PLACES_API_KEY') or st.secrets.get('GOOGLE_PLACES_API_KEY')
 
 
 """

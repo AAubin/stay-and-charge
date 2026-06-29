@@ -10,21 +10,25 @@ App Streamlit affichant sur une carte interactive des logements (hôtels, locati
 - API Opendatasoft ODRÉ (bornes IRVE, open data, sans clé API)
 - geopy pour le géocodage et le calcul de distances
 
-## Fonctionnalités actuelles
+## Fonctionnalités
 
 - Recherche de logements par ville ou code postal via Google Places (jusqu'à 60 résultats, 3 pages)
 - Bornes de recharge recherchées autour de chaque logement (pas du centre ville)
-- Carte avec deux IconLayers (logements / bornes), tooltip au survol
-- Panneau détail au clic sur un point
-- Sidebar : ville/code postal, rayon de recherche, distance max des bornes
+- Carte interactive avec deux IconLayers (logements / bornes), tooltip au survol, panneau détail au clic
+- Vue liste en complément de la carte (logements triés, bornes associées)
+- Filtres : rayon de recherche, distance max des bornes, note minimale, type de prise, puissance minimale
 - Message d'avertissement si les résultats semblent éloignés de la ville recherchée
+- URL partageable avec les paramètres de recherche
 
 ## Installation
 
 ```bash
 python -m venv .venv
 .venv\Scripts\activate
+# prod uniquement
 pip install -r requirements.txt
+# avec les dépendances de dev (tests)
+pip install -r requirements-dev.txt
 ```
 
 Copie `.env.example` en `.env` et renseigne ta clé Google Places :
@@ -37,6 +41,15 @@ cp .env.example .env
 
 ```bash
 streamlit run app.py
+```
+
+## Tests
+
+```bash
+# tests unitaires uniquement
+pytest -m "not integration"
+# tous les tests (unitaires + intégration, nécessite une connexion réseau et la clé Google Places)
+pytest
 ```
 
 ## Structure
@@ -52,14 +65,17 @@ data/
   cache.py              # wrappers st.cache_data (TTL 1h)
 services/
   geo.py                # calculs de distance, détection résultats éloignés
-  station_finder.py     # recherche des bornes par logement
+  station_finder.py     # association logements <-> bornes, filtres, agrégation
 components/
   map_view.py           # carte pydeck + groupement des stations
+  list_view.py          # vue liste logements / bornes
   filters.py            # sidebar de filtres
-  detail_panel.py       # panneau détail (st.dialog)
+  render_details.py     # panneau détail au clic (st.dialog) et cards bornes
 models/
   schemas.py            # dataclasses Lodging, ChargingStation
 tests/
+  unit_tests/           # tests unitaires (pytest)
+  integration_tests/    # tests d'intégration (appels réseau réels)
 ```
 
 ## Périmètre actuel
