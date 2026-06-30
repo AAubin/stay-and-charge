@@ -8,7 +8,8 @@ App Streamlit affichant sur une carte interactive des logements (hôtels, locati
 - [Streamlit](https://streamlit.io) + pydeck pour la carte interactive
 - Google Places API (logements)
 - API Opendatasoft ODRÉ (bornes IRVE, open data, sans clé API)
-- geopy pour le géocodage et le calcul de distances
+- Google Geocoding API (géocodage ville/code postal)
+- geopy pour le calcul de distances
 
 ## Fonctionnalités
 
@@ -61,7 +62,7 @@ logging_manager.py      # configuration du logging
 data/
   lodging.py            # appels Google Places (pagination 3 pages)
   charging_stations.py  # appels API Opendatasoft (IRVE)
-  geocoding.py          # géocodage via Nominatim
+  geocoding.py          # géocodage via Google Geocoding API
   cache.py              # wrappers st.cache_data (TTL 1h)
 services/
   geo.py                # calculs de distance, détection résultats éloignés

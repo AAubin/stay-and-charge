@@ -6,6 +6,8 @@ from services.geo import calculate_distance
 from data.cache import search_charging_stations
 from config import SOCKET_TYPES_LABELS
 from collections import defaultdict, Counter
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import time
 
 def find_nearby_stations(lodging: Lodging, max_distance: float) -> list[tuple[ChargingStation, float]]:
     """Interroge l'API ODRÉ autour du logement et retourne les bornes trouvées avec leur distance.
@@ -30,6 +32,9 @@ def find_nearby_stations(lodging: Lodging, max_distance: float) -> list[tuple[Ch
 def find_all_nearby_stations(lodgings_list: list[Lodging], max_distance: float) -> dict[Lodging, list[tuple[ChargingStation, float]]]:
     """Associe chaque logement à ses bornes de recharge proches via l'API ODRÉ.
 
+    Les requêtes sont parallélisées via ThreadPoolExecutor (5 workers) pour réduire
+    le temps de traitement sur les grandes listes de logements.
+
     Args:
         lodgings_list: liste des logements à traiter.
         max_distance: rayon de recherche en kilomètres.
@@ -37,10 +42,16 @@ def find_all_nearby_stations(lodgings_list: list[Lodging], max_distance: float) 
         Dictionnaire {Lodging: [(ChargingStation, distance_km), ...]} pour chaque logement.
         Un logement sans borne proche est associé à une liste vide.
     """
+    start = time.perf_counter()
+    logger.info("Start searching charging stations")
     results = {}
-    for lodging in lodgings_list:
-        results[lodging] = find_nearby_stations(lodging, max_distance)
-    logger.debug("Logements associées aux bornes")
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        futures = {executor.submit(find_nearby_stations, lodging, max_distance): lodging 
+                for lodging in lodgings_list}
+        for future in as_completed(futures):
+            lodging = futures[future]
+            results[lodging] = future.result()
+    logger.info(f"find_all_nearby_stations: {time.perf_counter() - start:.2f}s")
     return results
 
 def filter_lodging(results: dict[Lodging, list[tuple[ChargingStation, float]]], min_rating: float) -> dict[Lodging, list[tuple[ChargingStation, float]]]:

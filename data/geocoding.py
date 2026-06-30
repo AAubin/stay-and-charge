@@ -16,6 +16,7 @@ def geocode_location(city: str|int, country_codes: str = 'FR') -> tuple[float, f
         RuntimeError: en cas d'erreur réseau ou de timeout.
     """
     try:
+        logger.info("Start geocoding")
         payload = {
             'address': city,
             'key': GOOGLE_PLACES_API_KEY,
@@ -33,7 +34,7 @@ def geocode_location(city: str|int, country_codes: str = 'FR') -> tuple[float, f
     if data['status'] == 'OK':
         lat = data['results'][0]['geometry']['location']['lat']
         lng = data['results'][0]['geometry']['location']['lng']
-        logger.debug(f"Coordinates found for {city}: {lat}, {lng}")
+        logger.info(f"Coordinates found for {city}: {lat}, {lng}")
         return (lat, lng)
     if data['status'] == 'ZERO_RESULTS':
         logger.warning("City not found")

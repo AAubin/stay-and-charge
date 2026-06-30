@@ -17,12 +17,6 @@ def setup_logging():
                 'formatter': 'standard',
                 'level': logging.DEBUG,
             },
-            'file': {
-                'class': 'logging.FileHandler',
-                'formatter': 'standard',
-                'filename': 'app.log',
-                'level': logging.INFO,
-            }
         },
         'loggers': {
             '': {  # root logger
@@ -31,24 +25,29 @@ def setup_logging():
                 'propagate': False
             },
             'data': {
-                    'handlers': ['console'],
-                    'level': logging.DEBUG,
-                    'propagate': False
+                'handlers': ['console'],
+                'level': logging.INFO,
+                'propagate': False
             },
             'services': {
-                    'handlers': ['console'],
-                    'level': logging.INFO,
-                    'propagate': False
+                'handlers': ['console'],
+                'level': logging.INFO,
+                'propagate': False
             },
             'components': {
-                    'handlers': ['console'],
-                    'level': logging.INFO,
-                    'propagate': False
+                'handlers': ['console'],
+                'level': logging.INFO,
+                'propagate': False
             },
             'models': {
-                    'handlers': ['console'],
-                    'level': logging.INFO,
-                    'propagate': False
+                'handlers': ['console'],
+                'level': logging.INFO,
+                'propagate': False
+            },
+            'streamlit': {
+                'handlers': ['console'],
+                'level': logging.ERROR,
+                'propagate': False
             }
         }
     }

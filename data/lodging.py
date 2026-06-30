@@ -29,6 +29,7 @@ def search_lodgings(search_coord: tuple[float, float], radius: int) -> list[Lodg
         max_pages = 2
 
         while new_search:
+            logger.info("Start searching lodgings")
             new_search = False
             payload = {
                 'location': f"{lat},{lng}",
@@ -59,7 +60,7 @@ def search_lodgings(search_coord: tuple[float, float], radius: int) -> list[Lodg
                 token_present = True
                 new_search = True
             
-        logger.debug(f"Nb de logements: {len(total_lodging)}")
+        logger.info(f"Number of lodging found: {len(total_lodging)}")
         return total_lodging
     
     except Exception as e:
