@@ -3,8 +3,10 @@ logger = logging.getLogger(__name__)
 
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut, GeocoderServiceError
+from geopy.extra.rate_limiter import RateLimiter
 
-geolocator = Nominatim(user_agent="stay-and-charge", timeout=10)
+geolocator = Nominatim(user_agent="stay-and-charge/1.0 (antoineaubin44@gmail.com)")
+geocode_fn = RateLimiter(geolocator.geocode, min_delay_seconds=1)
 
 def geocode_location(city: str|int, country_codes: str = 'fr') -> tuple[float, float]:
     """Retourne les coordonnées d'une ville via Nominatim.
@@ -18,7 +20,7 @@ def geocode_location(city: str|int, country_codes: str = 'fr') -> tuple[float, f
         RuntimeError: en cas d'erreur réseau ou de timeout.
     """
     try:
-        location = geolocator.geocode(city, country_codes=country_codes)
+        location = geolocator.geocode_fn(city, country_codes=country_codes)
         if location:
             logger.debug(f"Coordinates found for {city}: {location.latitude}, {location.longitude}")
             return (location.latitude, location.longitude)
