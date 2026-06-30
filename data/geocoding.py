@@ -20,7 +20,7 @@ def geocode_location(city: str|int, country_codes: str = 'fr') -> tuple[float, f
         RuntimeError: en cas d'erreur réseau ou de timeout.
     """
     try:
-        location = geolocator.geocode_fn(city, country_codes=country_codes)
+        location = geocode_fn(city, country_codes=country_codes)
         if location:
             logger.debug(f"Coordinates found for {city}: {location.latitude}, {location.longitude}")
             return (location.latitude, location.longitude)
