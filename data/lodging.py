@@ -26,6 +26,7 @@ def search_lodgings(search_coord: tuple[float, float], radius: int) -> list[Lodg
         token_present = False
         token = None
         new_search = True
+        max_pages = 2
 
         while new_search:
             new_search = False
@@ -52,7 +53,7 @@ def search_lodgings(search_coord: tuple[float, float], radius: int) -> list[Lodg
                 logger.debug("No results")
 
             page_counter += 1
-            if 'next_page_token' in data and page_counter < 3:
+            if 'next_page_token' in data and page_counter < max_pages:
                 token = data['next_page_token']
                 time.sleep(2)
                 token_present = True

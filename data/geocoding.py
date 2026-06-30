@@ -1,15 +1,11 @@
 import logging
 logger = logging.getLogger(__name__)
 
-from geopy.geocoders import Nominatim
-from geopy.exc import GeocoderTimedOut, GeocoderServiceError
-from geopy.extra.rate_limiter import RateLimiter
+from config import GOOGLE_GEOCODE_URL, GOOGLE_PLACES_API_KEY
+import requests
 
-geolocator = Nominatim(user_agent="stay-and-charge/1.0 (antoineaubin44@gmail.com)")
-geocode_fn = RateLimiter(geolocator.geocode, min_delay_seconds=1)
-
-def geocode_location(city: str|int, country_codes: str = 'fr') -> tuple[float, float]:
-    """Retourne les coordonnées d'une ville via Nominatim.
+def geocode_location(city: str|int, country_codes: str = 'FR') -> tuple[float, float]:
+    """Retourne les coordonnées d'une ville via google.
 
     Args:
         city: nom ou code postal de la ville à géocoder.
@@ -20,15 +16,27 @@ def geocode_location(city: str|int, country_codes: str = 'fr') -> tuple[float, f
         RuntimeError: en cas d'erreur réseau ou de timeout.
     """
     try:
-        location = geocode_fn(city, country_codes=country_codes)
-        if location:
-            logger.debug(f"Coordinates found for {city}: {location.latitude}, {location.longitude}")
-            return (location.latitude, location.longitude)
-        else:
-            logger.warning("City not found")
-            raise ValueError("City not found")
-    except (GeocoderTimedOut, GeocoderServiceError) as e:
+        payload = {
+            'address': city,
+            'key': GOOGLE_PLACES_API_KEY,
+            'language': 'fr',
+            'components': f'country:{country_codes.upper()}'
+        }
+        logger.debug("Appel api google geocode")
+        resp = requests.get(GOOGLE_GEOCODE_URL, params=payload)
+        resp.raise_for_status()
+        data = resp.json()
+    except Exception as e:
         logger.error(f"Geocoding error: {e}")
         raise RuntimeError(f"Geocoding error: {e}") from e
-    
-    
+
+    if data['status'] == 'OK':
+        lat = data['results'][0]['geometry']['location']['lat']
+        lng = data['results'][0]['geometry']['location']['lng']
+        logger.debug(f"Coordinates found for {city}: {lat}, {lng}")
+        return (lat, lng)
+    if data['status'] == 'ZERO_RESULTS':
+        logger.warning("City not found")
+        raise ValueError("City not found")
+    raise RuntimeError(f"Geocoding error: {data['status']}")
+

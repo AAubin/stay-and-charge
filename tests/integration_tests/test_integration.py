@@ -10,7 +10,7 @@ def test_geocode_location():
     coord_st_brevin = geocode_location(44250)
     assert coord_bordeaux[0] == pytest.approx(44.8378, abs=0.01)
     assert coord_bordeaux[1] == pytest.approx(-0.5792, abs=0.01)
-    assert coord_st_brevin[0] == pytest.approx(47.2377, abs=0.01)
+    assert coord_st_brevin[0] == pytest.approx(47.2479, abs=0.01)
     assert coord_st_brevin[1] == pytest.approx(-2.1521, abs=0.01)
 
 @pytest.mark.integration

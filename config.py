@@ -15,6 +15,8 @@ Config variables
 """
 # Google Place API
 GOOGLE_PLACES_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
+# Google geocoding API
+GOOGLE_GEOCODE_URL = "https://maps.googleapis.com/maps/api/geocode/json"
 
 # OpendataSoft API
 OPENDATASOFT_URL = "https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/bornes-irve/records"

@@ -5,7 +5,7 @@ from data.geocoding import geocode_location as _geocode_location
 from models.schemas import Lodging, ChargingStation
 
 @cache_data(ttl=3600)
-def geocode_location(city_name: str, country_codes:str = 'fr') -> tuple[float, float]:
+def geocode_location(city_name: str, country_codes:str = 'FR') -> tuple[float, float]:
     return _geocode_location(city_name, country_codes=country_codes)
 
 @cache_data(ttl=3600)
