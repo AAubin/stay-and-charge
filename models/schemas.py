@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional
-from config import SOCKET_TYPES
+from config import SOCKET_TYPES, GOOGLE_PLACES_API_KEY
 
 @dataclass
 class Lodging:
@@ -31,7 +31,8 @@ class Lodging:
         extern_link = f"https://www.google.com/maps/place/?q=place_id:{place_id}"
         rating = data.get('rating')
         user_rating_totals = data.get('user_rating_totals')
-        image_url = None
+        ref = data.get('photos', [{}])[0].get('photo_reference')
+        image_url = f"https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference={ref}&key={GOOGLE_PLACES_API_KEY}" if ref else None
         return cls(place_id, name, lat, lng, address, extern_link, rating, user_rating_totals, image_url)
     
     def __hash__(self):

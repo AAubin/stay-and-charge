@@ -60,6 +60,7 @@ with map_tab:
     center = st.session_state.get('center', DEFAULT_CENTER)
     zoom = DEFAULT_ZOOM_CITY if results else DEFAULT_ZOOM_FRANCE
     event = render_map(results, center, zoom, filters['search_radius'])
+    st.write(event.selection.objects)
     if event.selection.objects:
         render_detail_panels(event.selection.objects)
 

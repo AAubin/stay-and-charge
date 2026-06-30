@@ -76,4 +76,4 @@ def render_map(results: dict[Lodging, list[tuple[ChargingStation, float]]], cent
     view_state = pdk.ViewState(longitude = center[1], latitude = center[0], zoom = zoom)
     deck = pdk.Deck(layers=layers, initial_view_state=view_state, tooltip=tooltip)
 
-    return st.pydeck_chart(deck, on_select="rerun", selection_mode="single-object")
+    return st.pydeck_chart(deck, on_select="rerun", selection_mode="single-object", key='map')

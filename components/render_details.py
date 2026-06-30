@@ -27,12 +27,15 @@ def render_lodging_details(details: dict) -> None:
     """
     st.subheader(details['name'])
     st.write(details['address'])
-    st.write(f"{details['nb_nearby_station']} stations à proximité")
-    st.page_link(details['extern_link'], label="Ouvrir dans Google Maps", icon="↗️")
+    if details['image_url']:
+        st.image(details['image_url'])
     if details['rating']:
         st.write(f"Note moyenne: {details['rating']}")
     if details['user_rating_totals']:
         st.write(f"Nombre de votants: {details['user_rating_totals']}")
+    st.write(f"{details['nb_nearby_station']} stations à proximité")
+    st.page_link(details['extern_link'], label="Ouvrir dans Google Maps", icon="↗️")
+
 
 def render_station_details(station: dict):
     """Affiche les informations détaillées d'un groupe de bornes dans le panneau.
