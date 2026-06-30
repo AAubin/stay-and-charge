@@ -14,7 +14,7 @@ from components.filters import render_filters
 from components.render_details import render_detail_panels
 from components.footer import render_footer
 
-st.set_page_config(layout='wide')
+st.set_page_config(layout='wide', initial_sidebar_state='expanded')
 st.title("Stay & Charge")
 st.markdown("Trouvez un logement avec une borne de recharge à proximité")
 map_tab, list_tab = st.tabs(['Carte', 'Liste'])
