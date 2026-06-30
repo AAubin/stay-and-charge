@@ -35,12 +35,14 @@ def render_list(results: dict[Lodging, list[tuple[ChargingStation, float]]]):
 
         with col_stations:
             if st.session_state.get('selected_lodging'):
-                lodging_results = {st.session_state['selected_lodging']: results[st.session_state['selected_lodging']]}
-                stations_data = create_stations_data(lodging_results)
-                with st.container(height=900):
-                    for station in stations_data:
-                        with st.container(border=True):
-                            render_station_details(station)
+                lodging_stations = results.get(st.session_state['selected_lodging'])
+                if lodging_stations:
+                    lodging_results = {st.session_state['selected_lodging']: lodging_stations}
+                    stations_data = create_stations_data(lodging_results)
+                    with st.container(height=900):
+                        for station in stations_data:
+                            with st.container(border=True):
+                                render_station_details(station)
     else:
         st.write("Pas de résultats trouvés")
 

@@ -27,9 +27,9 @@ def search_lodgings(search_coord: tuple[float, float], radius: int) -> list[Lodg
         token = None
         new_search = True
         max_pages = 2
+        logger.info("Start searching lodgings")
 
         while new_search:
-            logger.info("Start searching lodgings")
             new_search = False
             payload = {
                 'location': f"{lat},{lng}",
