@@ -4,7 +4,7 @@ logger = logging.getLogger(__name__)
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut, GeocoderServiceError
 
-geolocator = Nominatim(user_agent="stay-and-charge")
+geolocator = Nominatim(user_agent="stay-and-charge", timeout=10)
 
 def geocode_location(city: str|int, country_codes: str = 'fr') -> tuple[float, float]:
     """Retourne les coordonnées d'une ville via Nominatim.
