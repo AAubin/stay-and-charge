@@ -15,7 +15,7 @@ def render_filters() -> dict:
     with st.sidebar:
         city = st.text_input(label='Ville ou code postal', value=st.query_params.get('city', ''))
         radius = st.number_input(label='Rayon de recherche (km)', min_value=0, max_value=50, value=int(st.query_params.get('radius', 10)), help="max 50 km")
-        max_distance = st.slider(label='Distance max des bornes de recharge (km)', min_value=0.1, max_value=20.0, step=0.1, value=float(st.query_params.get('max_distance', 0.1)), format="%0.1f")
+        max_distance = st.number_input(label='Distance max des bornes de recharge (km)', min_value=0.1, max_value=20.0, step=0.1, value=float(st.query_params.get('max_distance', 0.1)), help="max 20 km")
         searched = st.button(label='Recherche')
         st.divider()
         min_rating = st.slider(label="Note minimal du logement:", min_value=0.0, max_value=5.0, step=0.1, value=float(st.query_params.get('min_rating', 0.0)), format="%0.1f")
