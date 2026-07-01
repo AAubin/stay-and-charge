@@ -7,7 +7,7 @@ from math import cos, radians
 import requests
 
 
-def search_charging_stations(search_coord: tuple[float, float], radius: int) -> list[ChargingStation]:
+def search_charging_stations(search_coord: tuple[float, float], radius: float) -> list[ChargingStation]:
     """Recherche des bornes de recharge via l'API ODRÉ dans un rayon autour des coordonnées données.
 
     Args:

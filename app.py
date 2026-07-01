@@ -49,7 +49,7 @@ if should_search:
 
     st.query_params['city'] = city
     st.query_params['radius'] = filters['search_radius']//1000
-    st.query_params['max_distance'] = filters['max_distance']
+    st.query_params['max_distance'] = filters['max_distance']/1000
     st.query_params['min_rating'] = filters['min_rating']
     st.query_params['socket_types_wanted'] = filters['socket_types_wanted']
     st.query_params['min_power'] = filters['min_power']

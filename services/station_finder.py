@@ -13,14 +13,13 @@ def find_nearby_stations(lodging: Lodging, max_distance: float) -> list[tuple[Ch
 
     Args:
         lodging: le logement de référence.
-        max_distance: rayon de recherche en kilomètres.
+        max_distance: rayon de recherche en mètres.
     Returns:
         Liste de tuples (ChargingStation, distance_km).
     """
     nearby_station = []
     lodging_coord = (lodging.lat, lodging.lng)
-    radius = max_distance*1000
-    stations_list = search_charging_stations(lodging_coord, radius=radius)
+    stations_list = search_charging_stations(lodging_coord, radius=max_distance)
     for station in stations_list:
         station_coord = (station.lat, station.lng)
         distance = calculate_distance(lodging_coord, station_coord)
@@ -36,7 +35,7 @@ def find_all_nearby_stations(lodgings_list: list[Lodging], max_distance: float) 
 
     Args:
         lodgings_list: liste des logements à traiter.
-        max_distance: rayon de recherche en kilomètres.
+        max_distance: rayon de recherche en mètres.
     Returns:
         Dictionnaire {Lodging: [(ChargingStation, distance_km), ...]} pour chaque logement.
         Un logement sans borne proche est associé à une liste vide.
